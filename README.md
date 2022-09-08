@@ -69,7 +69,7 @@ CoroutineScope(Dispatchers.IO).launch {
 호출하는 것만으로도 코루틴 생성</br>
 반환 값을 변수에 저장해두는 상태 관리용으로 cancel(), join()와 조합해 사용</br>
 코루틴 스코프 안에 선언된 여러개의 launch 블록은 모두 새로운 코루틴으로 분기 되면서 동시에 처리되기 때문에 순서를 정할 수 없음</br>
-3.1.1 cancel()/br>
+3.1.1 cancel()</br>
 코루틴의 동작을 멈춤</br>
 ```kotlin
 job = CoroutineScope(Dispatchers.Default).launch() {
