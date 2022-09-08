@@ -24,6 +24,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        //TEST
+        //CoroutineEX1.startTask()
+
     }
 
     fun copyImageLink(v: View) {
