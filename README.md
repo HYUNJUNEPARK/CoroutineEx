@@ -9,10 +9,10 @@
 2. <a href = "#content2">디스패처</a></br>
 3. <a href = "#content3">코루틴 스코프 함수</a></br>
 3.1 Launch{ }</br>
-3.1.1. cancel()</br>
-3.1.2 join()</br>
+ 3.1.1 cancel()</br>
+ 3.1.2 join()</br>
 3.2 async{ }</br>
-3.2.1 await()</br>
+ 3.2.1 await()</br>
 3.3 suspend</br>
 3.4 withContext()</br>
 
@@ -36,12 +36,12 @@ implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9'
 
 **1.2 코루틴 실행 스코프**</br>
 1.2.1 글로벌 스코프(GlobalScope)</br>
-앱의 생명 주기와 함께 동작하고 별도의 생명 주기 관리가 필요하지 않음</br>
-앱의 시작부터 종료까지 장시간 실행되어야하는 코루틴이 있다면 GlobalScope 에 작성</br>
+-앱의 생명 주기와 함께 동작하고 별도의 생명 주기 관리가 필요하지 않음</br>
+-앱의 시작부터 종료까지 장시간 실행되어야하는 코루틴이 있다면 GlobalScope 에 작성</br>
 
 1.2.2 코루틴 스코프(CoroutineScope)</br>
-필요할 때만 열고 완료 되면 닫는 코루틴을 담는 스코프 (ex. 버튼을 클릭해서 서버의 정보를 갖고오거나 파일 오픈)</br>
-디스패처를 코루틴 스코프의 괄호 안에 넣어 코루틴이 실행될 스레드를 지정</br>
+-필요할 때만 열고 완료 되면 닫는 코루틴을 담는 스코프 (ex. 버튼을 클릭해서 서버의 정보를 갖고오거나 파일 오픈)</br>
+-디스패처를 코루틴 스코프의 괄호 안에 넣어 코루틴이 실행될 스레드를 지정</br>
 ```kotlin
 //코루틴 스코프 예시
 CoroutineScope(Dispatchers.IO).launch {
@@ -51,8 +51,6 @@ CoroutineScope(Dispatchers.IO).launch {
 ```
 <br></br>
 <br></br>
-
-
 
 
 ><a id = "content2">**2. 디스패처**</a></br>
@@ -81,6 +79,7 @@ ex. 텍스트뷰에 글자를 입력해야할 경우 등</br>
 
 
 2.2.4 **Dispatchers.Unconfined**</br>
+
 <br></br>
 <br></br>
 
@@ -90,12 +89,44 @@ ex. 텍스트뷰에 글자를 입력해야할 경우 등</br>
 ><a id = "content3">**3. 코루틴 스코프 함수**</a></br>
 
 **3.1 launch()**</br>
-호출하는 것만으로도 코루틴 생성</br>
-반환 값을 변수에 저장해두는 상태 관리용으로 cancel(), join()와 조합해 사용</br>
-코루틴 스코프 안에 선언된 여러개의 launch 블록은 모두 새로운 코루틴으로 분기 되면서 동시에 처리되기 때문에 순서를 정할 수 없음</br>
-현재 스레드 중단 없이 코루틴을 즉시 시작 시킨다. 결과를 호출한 쪽에 반환하지 않는다. suspend 함수가 아닌 **일반 함수 안에서 suspend 함수를 호출할 때**와 **코루틴의 결과 처리가 필요없을 때 사용**</br> 
+-호출하는 것만으로도 코루틴 생성</br>
+-cancel(), join()와 조합해 사용 가능</br>
+-코루틴 스코프 안에 선언된 여러개의 launch 블록은 모두 새로운 코루틴으로 분기 되면서 동시에 처리되기 때문에 순서를 정할 수 없음(병렬 처리)</br>
+cf. 순차 처리가 필요할 때 join() 사용</br>
+-현재 스레드 중단 없이 코루틴을 즉시 시작 시킨다. 결과를 호출한 쪽에 반환하지 않는다.</br>
+-suspend 함수가 아닌 **1)일반 함수 안에서 suspend 함수를 호출할 때**와 **2)코루틴의 결과 처리가 필요없을 때 사용**</br> 
+
+```kotlin
+CoroutineScope(Dispatchers.Default).launch {
+    launch {
+        for (i in 0..50) {
+            Log.d(TAG, "onCreate: launch 1 $i")
+            delay(500)
+        }
+    }
+
+    launch {
+        for (i in 0..50) {
+            Log.d(TAG, "onCreate: launch 2 $i")
+            delay(500)
+        }
+    }
+}
+/*
+    결과
+    launch 2 0
+    launch 1 0
+    launch 2 1
+    launch 1 1
+    launch 2 2
+    launch 1 2
+    launch 2 3
+...
+*/
+```
+
 3.1.1 cancel()</br>
-코루틴의 동작을 멈춤</br>
+-코루틴의 동작을 멈춤</br>
 ```kotlin
 job = CoroutineScope(Dispatchers.Default).launch() {
     val job1 = launch {
@@ -110,8 +141,9 @@ binding.btnJobStop.setOnClickListener {
     job?.cancel()
 }
 ```
+
 3.1.2 join()</br>
-launch 블록 뒤에 join()을 사용하면 코루틴이 순차적으로 실행됨</br>
+-launch 블록 뒤에 join()을 사용하면 코루틴이 순차적으로 실행됨</br>
 ```kotlin
 CoroutineScope(Dispatchers.Default).launch() {
     //launch1
@@ -130,19 +162,22 @@ CoroutineScope(Dispatchers.Default).launch() {
         }
     }
 }
-/* 결과 launch1 -> launch2
-launch1 = 0
-launch1 = 1
-launch1 = 2
-launch2 = 0
-launch2 = 1
-launch2 = 2 */
+/*
+    결과 launch1 -> launch2
+    launch1 = 0
+    launch1 = 1
+    launch1 = 2
+    launch2 = 0
+    launch2 = 1
+    launch2 = 2
+ */
 ```
 
 **3.2 async**</br>
-상태 관리와 연산 결과까지 반환 받을 수 있음</br>
-현재 스레드 중단 없이 코루틴을 즉시 시작 시킨다. 호출 쪽에서 await()를 통해 코루틴 결과를 기다릴 수 있다. **병행으로 실행될 필요가 있는 다수의 코루틴을 사용할 때 사용**</br>
+-현재 스레드 중단 없이 코루틴을 즉시 시작 시킨다.</br>
+-호출 쪽에서 await()를 통해 코루틴 결과를 기다릴 수 있다. **병행으로 실행될 필요가 있는 다수의 코루틴을 사용할 때 사용**</br>
 **async 빌더는 suspend 함수 내부에서만 사용 가능**</br>
+
 3.2.1 await()</br>
 코루틴을 async 로 선언하고 결괏값을 처리하는 곳에 await() 함수를 사용하면 결과 처리가 완료된 후에 await() 를 호출한 줄의 코드가 실행됨</br>
 ```kotlin
@@ -158,6 +193,41 @@ CoroutineScope(Dispatchers.Default).async {
     Log.d("코루틴", "연산 결과 = ${value1.await() + value2.await()}")//결과 처리가 완료된 후에 await() 를 호출한 줄의 코드가 실행됨
 }
 ```
+
+```kotlin
+CoroutineScope(Dispatchers.Default).async {
+  var sum = async {
+    var _sum = 0
+    for (i in 0..10) {
+       _sum += i
+       Log.d(TAG, "onCreate _sum: $_sum")
+       delay(200)
+    }
+    Log.d(TAG, "async2 _sum: $_sum")
+    _sum
+  }
+ 
+  Log.d(TAG, "async1 sum : ${sum.await()}")
+ 
+  async {
+   Log.d(TAG, "async3")
+  }
+}
+
+/*
+case1 Log.d(TAG, "async1 sum: $sum")
+async1 sum : DeferredCoroutine{Active}@c45e5bb
+async3
+async2 sum: 55
+
+case2 Log.d(TAG, "async1 sum : ${sum.awit()}")
+async2 sum : 55
+async1 sum : 55
+async3
+*/
+
+```
+
 
 **3.3 suspend**</br>
 -일반 함수를 코루틴으로 만드는 키워드</br>
@@ -183,17 +253,15 @@ CoroutineScope(Dispatcher.IO).launch {
 ```
 
 
-
-
-
-
-
-
-
 **3.4 withContext**</br>
-디스패처를 분리시키는 키워드</br>
-suspend 함수를 코루틴 스코프에서 호출할 때 호출한 스코프와 다른 디스패처를 사용할 경우 사용</br>
-(ex. Main 디스패처에서 UI 를 제어해야하는 데 호출된 suspend 함수는 파일을 읽어와야하는 경우)</br>
+-디스패처를 분리시키는 키워드</br>
+-suspend 함수를 코루틴 스코프에서 호출할 때 호출한 스코프와 다른 디스패처를 사용할 경우 사용</br>
+ex. Main 디스패처에서 UI 를 제어해야하는 데 호출된 suspend 함수는 파일을 읽어와야하는 경우</br>
+-비동기 코드를 순차적 실행할 때 사용</br>
+-withContext 는 async-await 와 거의 흡사한 것 처럼 보이며 속도는 withContext 가 2배 이상 빠르나 ns 단위에서 차이이기 때문에 거의 의미가 없는 차이라고 볼 수 있음</br>
+-async 는 병렬 처리가 가능하고 withContext 는 순차 처리만 가능</br>
+-async 내에서 발생한 예외는 try-catch 로 잡을 수 없으며 withContext 는 예외 처리가 가능</br>
+
 ```kotlin
 CoroutineScope(Dispatchers.Main).launch {
     //코드1
@@ -208,6 +276,40 @@ private suspend fun readFile() : String {
     return "파일내용"
 }
 ```
+
+```kotlin
+//withContext, 순차처리 -> 3초 소요
+suspend fun exampleSuspend() {
+    withContext(Dispatchers.IO) {
+        delay(1000)
+    }
+
+    withContext(Dispatchers.IO) {
+        delay(1000)
+    }
+
+    withContext(Dispatchers.IO) {
+        delay(1000)
+    }
+}
+
+//async, 병렬처리 -> 1초 소요
+suspend fun test() {
+    CoroutineScope(Dispatchers.IO).async {
+        delay(1000)
+    }
+
+    CoroutineScope(Dispatchers.IO).async {
+        delay(1000)
+    }
+
+    CoroutineScope(Dispatchers.IO).async {
+        delay(1000)
+    }
+}
+```
+
+
 <br></br>
 <br></br>
 ---
@@ -228,5 +330,6 @@ https://todaycode.tistory.com/179</br>
 스레드 관련해서 원초적인 궁금증이 생겼습니다</br>
 https://www.inflearn.com/questions/335497</br>
 
-
+withContext는 무엇이며 async와 무슨 차이가 있을까?</br>
+https://todaycode.tistory.com/183</br>
 

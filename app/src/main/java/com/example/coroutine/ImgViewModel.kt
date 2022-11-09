@@ -29,7 +29,7 @@ class ImgViewModel(application: Application): AndroidViewModel(application) {
         try {
             val clipboard = context.getSystemService(AppCompatActivity.CLIPBOARD_SERVICE) as ClipboardManager
             val clipData = ClipData.newPlainText(
-                "simple text",
+                "simple clip",
                 "https://www.hanbit.co.kr/data/editor/20200519155220_aglmvinv.png"
             )
             clipboard.setPrimaryClip(clipData)
@@ -59,6 +59,9 @@ class ImgViewModel(application: Application): AndroidViewModel(application) {
             return bitmap
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+        withContext(Dispatchers.Main) {
+            _loading.value = false
         }
         return null
     }
