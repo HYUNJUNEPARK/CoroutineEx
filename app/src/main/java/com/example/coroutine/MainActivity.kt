@@ -1,4 +1,4 @@
-package com.example.coroutines_imgdownloadapp
+package com.example.coroutine
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -9,7 +9,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import com.example.coroutines_imgdownloadapp.databinding.ActivityMainBinding
+import androidx.databinding.DataBindingUtil
+import com.example.coroutine.databinding.ActivityMainBinding
 import kotlinx.coroutines.*
 import java.net.MalformedURLException
 import java.net.URL
@@ -18,20 +19,21 @@ class MainActivity : AppCompatActivity() {
     companion object {
         const val TAG = "testLog"
     }
-
-    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.mainActivity = this
 
         //TEST
         //CoroutineEX1.startTask()
-
+        showThreadName("onCreate")
     }
 
-    fun copyImageLink(v: View) {
+    fun onCopyImageLink() {
         try {
+            showThreadName("onCopyImageLink()")
             val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
             val clipData = ClipData.newPlainText(
                 "simple text",
@@ -45,17 +47,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun loadImage(v: View) {
+    fun onLoadImage() {
         CoroutineScope(Dispatchers.Main).launch {
-            Log.d(TAG, "Dispatchers.Main.launch Block")
+            showThreadName("onLoadImage()1")
             showProgressBar()
 
             var bitmap: Bitmap? = null
 
             //join() : bitmap 초기화가 된 후 다음 launch 블럭을 실행
             CoroutineScope(Dispatchers.IO).launch {
-                Log.d(TAG, "Dispatchers.IO.launch : load bitmap")
                 try {
+                    showThreadName("onLoadImage()2")
                     val url = URL(binding.editUrl.text.toString())
                     val inputStream = url.openStream()
                     bitmap = BitmapFactory.decodeStream(inputStream)
@@ -74,7 +76,7 @@ class MainActivity : AppCompatActivity() {
 
             //join()이 없었을 때, 아래 launch 블럭이 실행되기 전 dismissProgressBar() 가 실행됐었음
             launch {
-                Log.d(TAG, "Dispatchers.Main.launch : setImageBitmap")
+                showThreadName("onLoadImage()3")
                 binding.imagePreview.setImageBitmap(bitmap)
             }.join()
 
@@ -92,5 +94,10 @@ class MainActivity : AppCompatActivity() {
     private suspend fun dismissProgressBar() {
         Log.d(TAG, "suspend dismissProgressBar")
         binding.progress.visibility = View.GONE
+    }
+
+    private fun showThreadName(position: String) {
+        val threadName = Thread.currentThread().name
+        Log.d(TAG, "Running on thread on $position: $threadName")
     }
 }

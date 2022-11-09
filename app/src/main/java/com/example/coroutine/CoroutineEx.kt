@@ -1,12 +1,12 @@
-package com.example.coroutines_imgdownloadapp
+package com.example.coroutine
 
 
 import android.util.Log
-import com.example.coroutines_imgdownloadapp.MainActivity.Companion.TAG
+import com.example.coroutine.MainActivity.Companion.TAG
 import kotlinx.coroutines.*
 
 //코루틴에서 결과 받기 예시_async/withContext
-object CoroutineEX1 {
+object CoroutineEx {
     private val myCoroutineScope = CoroutineScope(Dispatchers.Main)
 
     fun startTask() {

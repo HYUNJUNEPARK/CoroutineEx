@@ -1,4 +1,4 @@
-package com.example.coroutines_imgdownloadapp
+package com.example.coroutine
 
 import org.junit.Test
 
