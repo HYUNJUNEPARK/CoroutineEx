@@ -2,7 +2,7 @@
 
 ---
 
-<img src="src/ref/CoroutineEx_ImgDownloadApp_img.png" height="400"/>
+<img src="ref/CoroutineEx_ImgDownloadApp_img.png" height="400"/>
 
 ---
 1. <a href = "#content1">코루틴(Coroutine)</a></br>
