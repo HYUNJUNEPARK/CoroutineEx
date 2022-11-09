@@ -50,12 +50,28 @@ CoroutineScope(Dispatchers.IO).launch {
 ><a id = "content2">**2. 디스패처**</a></br>
 
 **2.1 기능**</br>
-코루틴 스코프 내부에서 실행할 코드의 성격에 맞게 사용해야하는 도구</br>
+-코루틴을 어떤 스레드에게 보낼지 정하는 도구</br>
+-스레드 풀(Thread Pool)은 스레드를 일정 개수만큼 만들어두고 작업 큐에 들어오는 작업을 하나씩 처리하는데,</br>
+디스패처는 스레드 풀안의 스레드 부하 상황에 맞게 코루틴을 배분함</br>
+
 
 **2.2 종류**</br>
-2.2.1 **Dispatchers.IO** : 이미지 다운, 파일 입출력 등 입출력에 최적화 되어있는 디스패처.</br>
-2.2.2 **Dispatchers.Main** : UI 와 상호작용에 최적화되어 있는 디스패처. 텍스트뷰에 글자를 입력해야할 경우 Main 컨텍스트 사용.</br>
-2.2.3 **Dispatchers.Default** : CPU 를 많이 사용하는 작업을 백그라운드 스레드에서 실행하도록 최적화되어있는 디스패처.</br>
+2.2.1 **Dispatchers.IO** : </br>
+-대기 시간이 있는 작업을 수행하기 위해 최적화되어 있는 디스패처</br>
+ex. 이미지 다운, 파일 입출력 등</br>
+
+2.2.2 **Dispatchers.Main** : </br>
+-UI 와 상호작용에 최적화되어 있는 디스패처</br>
+ex. 텍스트뷰에 글자를 입력해야할 경우 등</br>
+
+2.2.3 **Dispatchers.Default** : </br>
+-CPU 를 많이 사용하는 작업을 백그라운드 스레드에서 실행하도록 최적화되어 있는 디스패처</br>
+-리스트를 정렬하거나, Json  Parsing 작업 등에 최적화</br>
+-CPU 코어 개수만큼 스레드를 생성해 작업</br>
+ㄴ코어가 스레드1 작업을 잠시 멈추고 스레드2 작업을 이어한다면, 스레드1에서 진행 중이던 작업을 기록하고 스레드2에서 진행할 작업을 불러오는 작업이 필요한데 이렇게 전환하는 것을 **Context Switiching** 이라고 하고 이때 낭비되는 시간을 **오버헤드**라고 함</br>
+코어보다 사용 스레드 갯수와 오버헤드 발생은 비례하는데, 이를 최소화하기 위해 CPU 코어 개수만큼 스레드에 제한을 두고 사용하는 전략을 사용</br>
+
+
 2.2.4 **Dispatchers.Unconfined**</br>
 <br></br>
 <br></br>
@@ -184,6 +200,9 @@ https://whyprogrammer.tistory.com/596</br>
 
 이것이 안드로이드다. 10장 스레드와 코루틴</br>
 
+Coroutine Dispatcher, 넌 대체 뭐야?</br>
+https://todaycode.tistory.com/182</br>
 
-
+스레드 관련해서 원초적인 궁금증이 생겼습니다</br>
+https://www.inflearn.com/questions/335497</br>
 
