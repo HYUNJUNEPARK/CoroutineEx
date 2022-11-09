@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:text="샘플 이미지 링크 복사"
-            android:onClick="@{()->mainActivity.onCopyImageLink()}"
+            android:onClick="@{()->mainActivity.onCopyImgLink()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
