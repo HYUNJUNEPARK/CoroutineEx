@@ -133,6 +133,8 @@ binding.btnJobStop.setOnClickListener {
 }
 ```
 
+<br></br>
+<br></br>
 
 ><a id = "content4">**4. Blocking 함수**</a></br>
 
@@ -223,9 +225,11 @@ runBlocking {
 }
 ```
 
+<br></br>
+<br></br>
+
 ><a id = "content5">**5. suspend**</a></br>
 
-**5. suspend**</br>
 -일반 함수를 코루틴으로 만드는 키워드</br>
 -코루틴 안에서 suspend 키워드로 선언된 함수가 호출되면 이전까지의 코드 실행이 멈추고 suspend 함수의 처리가 완료된 후에 멈춰 있던 코드의 다음 코드부터 실행됨</br>
 -suspend 키워드가 있으면 코루틴 스코프 안에서 자동으로 백그라운드 스레드처럼 동작</br>
@@ -248,9 +252,11 @@ CoroutineScope(Dispatcher.IO).launch {
 */
 ```
 
+<br></br>
+<br></br>
+
 ><a id = "content6">**6. withContext**</a></br>
 
-**6. withContext**</br>
 -디스패처를 분리시키는 키워드</br>
 -suspend 함수를 코루틴 스코프에서 호출할 때 호출한 스코프와 다른 디스패처를 사용할 경우 사용</br>
 ex. Main 디스패처에서 UI 를 제어해야하는 데 호출된 suspend 함수는 파일을 읽어와야하는 경우</br>
