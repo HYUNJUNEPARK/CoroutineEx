@@ -40,23 +40,32 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onLoadImage() {
-        //main thread
         try {
             val url = binding.editUrl.text.toString()
             if (url.isNullOrEmpty()) { return }
 
-            //DefaultDispatcher-worker-1
             CoroutineScope(Dispatchers.IO).launch {
-                viewModel.loadImg(url).let { bitmap ->
-                    //main thread
-                    withContext(Dispatchers.Main) {
-                        if (bitmap == null) {
-                            Toast.makeText(this@MainActivity, "Failed Load Image", Toast.LENGTH_SHORT).show()
-                        }
-                        binding.imagePreview.setImageBitmap(bitmap)
-                    }
+                viewModel.convertUrlToBitmap(url) { bitmap ->
+
+                    Toast.makeText(this@MainActivity, "Failed Load Image", Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, "onLoadImage: $bitmap")
+                    Log.d(TAG, "thread name: ${Thread.currentThread().name}")
                 }
+
+//                viewModel.convertUrlToBitmap(url).let { bitmap ->
+//                    //main thread
+//                    withContext(Dispatchers.Main) {
+//                        if (bitmap == null) {
+//                            Toast.makeText(this@MainActivity, "Failed Load Image", Toast.LENGTH_SHORT).show()
+//                        }
+//                        binding.imagePreview.setImageBitmap(bitmap)
+//                    }
+//                }
+
+
             }
+
+
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -72,20 +81,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-//Sample 2. launch vs Async
-fun startTask() {
-    myCoroutineScope.launch(Dispatchers.Default) {
-        /* 코루틴에서 결과를 받아오려면 async 빌더로 코루틴을 실행시켜야하는데
-        startTask()는 suspend 함수가 아니기 때문에 performSlowTaskAsync() 에서 async 빌더를 사용 */
-        val asyncResult = performTaskAsync().await()
-        Log.d(TAG, "$asyncResult")
+    //Sample 2. launch vs Async
+    fun startTask() {
+        myCoroutineScope.launch(Dispatchers.Default) {
+            /* 코루틴에서 결과를 받아오려면 async 빌더로 코루틴을 실행시켜야하는데
+            startTask()는 suspend 함수가 아니기 때문에 performSlowTaskAsync() 에서 async 빌더를 사용 */
+            val asyncResult = performTaskAsync().await()
+            Log.d(TAG, "$asyncResult")
 
-        /* withContext : 부모 코루틴에 의해 사용되던 컨텍스트와 다른 컨텍스트에서 코루틴을 실행시킴
-        코루틴에서 결과를 반환할 때 async 대신 사용할 수 있음 */
-        val withContextResult = performTaskWithContext()
-        Log.d(TAG, "$withContextResult")
+            /* withContext : 부모 코루틴에 의해 사용되던 컨텍스트와 다른 컨텍스트에서 코루틴을 실행시킴
+            코루틴에서 결과를 반환할 때 async 대신 사용할 수 있음 */
+            val withContextResult = performTaskWithContext()
+            Log.d(TAG, "$withContextResult")
+        }
     }
-}
 
     private suspend fun performTaskAsync(): Deferred<String> =
         //Deferred<String> : 향후 언젠가 String 타입의 값을 반환한다는 의미

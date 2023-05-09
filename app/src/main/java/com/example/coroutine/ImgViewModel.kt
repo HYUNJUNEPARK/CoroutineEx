@@ -15,22 +15,25 @@ import java.net.URL
 
 class ImgViewModel(application: Application): AndroidViewModel(application) {
     private val context = getApplication<Application>().applicationContext
+    private val clipDataLabel = "simple_clip"
+    private val clipBoardText = "https://www.hanbit.co.kr/data/editor/20200519155220_aglmvinv.png"
 
-    val loading: LiveData<Boolean>
-        get() = _loading
+    val loading: LiveData<Boolean> get() = _loading
     private var _loading = MutableLiveData<Boolean>()
 
     init {
         _loading.value = false
     }
 
-    //클립보드에 지정 URL 링크를 복사
+    /**
+     * 클립보드에 지정 URL 링크를 복사
+     */
     fun copyImgLink(): Boolean {
         try {
             val clipboard = context.getSystemService(AppCompatActivity.CLIPBOARD_SERVICE) as ClipboardManager
             val clipData = ClipData.newPlainText(
-                "simple clip",
-                "https://www.hanbit.co.kr/data/editor/20200519155220_aglmvinv.png"
+                clipDataLabel,
+                clipBoardText
             )
             clipboard.setPrimaryClip(clipData)
             return true
@@ -40,29 +43,34 @@ class ImgViewModel(application: Application): AndroidViewModel(application) {
         return false
     }
 
-    suspend fun loadImg(url: String): Bitmap? {
-        //DefaultDispatcher-worker-1
+    /**
+     * 이미지 URL 을 Bitmap 으로 바꾼다.
+     * Dispatchers.IO 에서 호출
+     */
+    suspend fun convertUrlToBitmap(url: String, callback:(Bitmap)->Unit) {
         try {
-            //main thread
-            withContext(Dispatchers.Main) {
-                _loading.value = true
-            }
+            startLoading()
 
             val url = URL(url)
             val inputStream = url.openStream()
             val bitmap = BitmapFactory.decodeStream(inputStream)
 
-            //main thread
-            withContext(Dispatchers.Main) {
-                _loading.value = false
-            }
-            return bitmap
+            finishLoading()
+            callback(bitmap)
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private suspend fun startLoading() {
+        withContext(Dispatchers.Main) {
+            _loading.value = true
+        }
+    }
+
+    private suspend fun finishLoading() {
         withContext(Dispatchers.Main) {
             _loading.value = false
         }
-        return null
     }
 }
