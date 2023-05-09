@@ -6,20 +6,21 @@
 
 ---
 1. <a href = "#content1">코루틴(Coroutine)</a></br>
+-코루틴 실행 스코프(GlobalScope/CoroutineScope/runBlocking)</br>
 2. <a href = "#content2">CoroutineScope 디스패처</a></br>
+-Dispatchers.IO/Dispatchers.Main/Dispatchers.Default</br>
 3. <a href = "#content3">코루틴 스코프 함수</a></br>
-3.1 Launch{ }</br>
- 3.1.1 cancel()</br>
- 3.1.2 join()</br>
-3.2 async{ }</br>
- 3.2.1 await()</br>
-3.3 suspend</br>
-3.4 withContext()</br>
+launch{},async{}</br>
+4. <a href = "#content4">Blocking 함수</a></br>
+join(), await(), withTimeoutOrNull(mills)</br>
+5. <a href = "#content5">suspend</a></br>
+6. <a href = "#content6">withContext</a></br>
 
 * <a href = "#ref">참고링크</a>
 ---
+
 ><a id = "content1">**1. 코루틴(Coroutine)**</a></br>
-> 
+
 **0. Build**
 `implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9'`
 
@@ -132,7 +133,9 @@ binding.btnJobStop.setOnClickListener {
 }
 ```
 
-**4. Blocking 함수**</br>
+
+><a id = "content4">**4. Blocking 함수**</a></br>
+
 4.1 join()</br>
 -Job.join()</br>
 -launch 블록 뒤에 join()을 사용하면 코루틴이 순차적으로 실행됨</br>
@@ -220,6 +223,8 @@ runBlocking {
 }
 ```
 
+><a id = "content5">**5. suspend**</a></br>
+
 **5. suspend**</br>
 -일반 함수를 코루틴으로 만드는 키워드</br>
 -코루틴 안에서 suspend 키워드로 선언된 함수가 호출되면 이전까지의 코드 실행이 멈추고 suspend 함수의 처리가 완료된 후에 멈춰 있던 코드의 다음 코드부터 실행됨</br>
@@ -243,6 +248,7 @@ CoroutineScope(Dispatcher.IO).launch {
 */
 ```
 
+><a id = "content6">**6. withContext**</a></br>
 
 **6. withContext**</br>
 -디스패처를 분리시키는 키워드</br>
